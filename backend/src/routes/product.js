@@ -7,30 +7,40 @@ const router = express.Router();
 
 // GET /products - Get all products with pagination and filters
 router.get('/', async (req, res) => {
-  const { page = 1, limit = 12, category, search, featured } = req.query;
+  try {
+    const { page = 1, limit = 12, category, search, featured } = req.query;
 
-  let query = { status: 'active' };
-  if (category) query.categoryId = category;
-  if (search) query.$text = { $search: search };
-  if (featured === 'true') query.isFeatured = true;
+    let query = { status: 'active' };
+    if (category) query.categoryId = category;
+    if (search) query.$text = { $search: search };
+    if (featured === 'true') query.isFeatured = true;
 
-  const skip = (page - 1) * limit;
-  const products = await Product.find(query)
-    .populate('categoryId brandId')
-    .skip(skip)
-    .limit(parseInt(limit))
-    .sort({ createdAt: -1 });
+    const skip = (page - 1) * limit;
+    const products = await Product.find(query)
+      .populate('categoryId')
+      .populate('brandId')
+      .skip(skip)
+      .limit(parseInt(limit))
+      .sort({ createdAt: -1 });
 
-  const total = await Product.countDocuments(query);
+    const total = await Product.countDocuments(query);
 
-  res.json({
-    success: true,
-    message: 'Products retrieved',
-    data: {
-      items: products,
-      pagination: { page: parseInt(page), limit: parseInt(limit), total, pages: Math.ceil(total / limit) },
-    },
-  });
+    res.json({
+      success: true,
+      message: 'Products retrieved',
+      data: {
+        items: products || [],
+        pagination: { page: parseInt(page), limit: parseInt(limit), total, pages: Math.ceil(total / limit) },
+      },
+    });
+  } catch (error) {
+    console.error('Product fetch error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching products',
+      error: error.message,
+    });
+  }
 });
 
 // GET /products/:id - Get product details

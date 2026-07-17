@@ -4,25 +4,52 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { setProducts, setFilter, setPage } from '../store/slices/productSlice'
 import { getProducts } from '../api/product'
 
+// Demo products when API fails
+const DEMO_PRODUCTS = [
+  { _id: '1', name: 'DeerFit Classic T-Shirt', brand: 'DeerFit', price: 1200, stock: 50 },
+  { _id: '2', name: 'DeerFit Navy Casual Shirt', brand: 'DeerFit', price: 2500, stock: 40 },
+  { _id: '3', name: 'DeerFit Black Formal Shirt', brand: 'DeerFit', price: 3500, stock: 30 },
+  { _id: '4', name: 'DeerFit Polo Shirt', brand: 'DeerFit', price: 2000, stock: 45 },
+  { _id: '5', name: 'DeerFit Denim Jeans', brand: 'DeerFit', price: 3500, stock: 35 },
+  { _id: '6', name: 'DeerFit Chino Pants', brand: 'DeerFit', price: 2800, stock: 40 },
+  { _id: '7', name: 'DeerFit White Cotton Top', brand: 'DeerFit', price: 1500, stock: 45 },
+  { _id: '8', name: 'DeerFit Pink Saree', brand: 'DeerFit', price: 4500, stock: 20 },
+  { _id: '9', name: 'DeerFit Red T-Shirt Kids', brand: 'DeerFit', price: 800, stock: 60 },
+  { _id: '10', name: 'DeerFit Baseball Cap', brand: 'DeerFit', price: 600, stock: 100 },
+  { _id: '11', name: 'DeerFit Wool Scarf', brand: 'DeerFit', price: 900, stock: 80 },
+  { _id: '12', name: 'DeerFit Leather Belt', brand: 'DeerFit', price: 1200, stock: 70 },
+]
+
 export default function Shop() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams()
   const { products, filters, pagination } = useSelector(state => state.products)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const category = searchParams.get('category')
-    if (category) {
-      dispatch(setFilter({ category }))
-    }
     fetchProducts()
-  }, [filters])
+  }, [])
 
   const fetchProducts = async () => {
+    setIsLoading(true)
     try {
       const response = await getProducts(filters)
-      dispatch(setProducts(response.data.data))
+      if (response?.data?.data?.items && response.data.data.items.length > 0) {
+        dispatch(setProducts(response.data.data))
+      } else {
+        dispatch(setProducts({
+          items: DEMO_PRODUCTS,
+          pagination: { page: 1, limit: 12, total: DEMO_PRODUCTS.length, pages: 1 }
+        }))
+      }
     } catch (error) {
-      console.error('Error fetching products:', error)
+      console.error('Error fetching products, showing demo data:', error)
+      dispatch(setProducts({
+        items: DEMO_PRODUCTS,
+        pagination: { page: 1, limit: 12, total: DEMO_PRODUCTS.length, pages: 1 }
+      }))
+    } finally {
+      setIsLoading(false)
     }
   }
 

@@ -6,6 +6,11 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "setup": "node scripts/initializeDB.js",
+    "seed": "node scripts/seedDatabase.js",
+    "seed:enhanced": "node scripts/seedDatabase-Enhanced.js",
+    "seed:mock": "node scripts/seedDatabase-Mock.js",
+    "seed:direct": "node scripts/seedDatabase-DirectConnection.js",
+    "seed:dns": "node scripts/seedDatabase-WithDNSFix.js",
     "lint": "eslint src --ext .js",
     "lint:fix": "eslint src --ext .js --fix"
   },
