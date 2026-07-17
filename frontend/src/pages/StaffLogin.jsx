@@ -17,8 +17,14 @@ export default function StaffLogin() {
     setError('')
     try {
       const response = await loginStaff(formData)
-      dispatch(setToken(response.data.data.token))
-      dispatch(setUser(response.data.data.adminUser))
+      const { token, adminUser } = response.data.data
+      // Save token to localStorage first (before any dispatch or navigation)
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(adminUser))
+      // Update Redux state
+      dispatch(setToken(token))
+      dispatch(setUser(adminUser))
+      // Navigate after state and storage are updated
       navigate('/admin/dashboard')
     } catch (err) {
       setError(err.response?.data?.message || 'Staff login failed')
