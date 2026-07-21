@@ -10,25 +10,27 @@ This guide explains how to set up email and database services for the Clothing E
 
 The `.env` file contains all configuration needed for email and database.
 
-### Current Configuration (in `.env`):
+### Configuration Shape (see `.env.example`, real values live only in your local `.env`):
 
 ```
 # Database Configuration
-MONGODB_URI=mongodb+srv://chinmoy:666@cluster0.yfyovpw.mongodb.net/clothing-ecommerce
+MONGODB_URI=<your MongoDB Atlas connection string>
 
 # Email Configuration
-SMTP_MAIL=chinmoy7776@gmail.com
-SMTP_PASSWORD=pbgqxndnnlydjoho
-EMAIL_USER=chinmoy7776@gmail.com
-EMAIL_PASSWORD=pbgqxndnnlydjoho
+SMTP_MAIL=<your Gmail address>
+SMTP_PASSWORD=<your Gmail app-specific password>
 EMAIL_FROM=noreply@fashionhub.com
-ADMIN_EMAIL=chinmoy6667@gmail.com
+ADMIN_EMAIL=<admin login email>
+ADMIN_PASSWORD=<admin login password>
 
 # Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=dc4e7ctxc
-CLOUDINARY_API_KEY=894575481994163
-CLOUDINARY_API_SECRET=YYjakA0J1H1g-DjTyxyvCtR3nns
+CLOUDINARY_CLOUD_NAME=<your Cloudinary cloud name>
+CLOUDINARY_API_KEY=<your Cloudinary API key>
+CLOUDINARY_API_SECRET=<your Cloudinary API secret>
 ```
+
+⚠️ Never commit real values for these to `SETUP_GUIDE.md`, `.env.example`, or any
+other tracked file — only `.env` (gitignored) should hold actual secrets.
 
 ---
 
@@ -73,9 +75,8 @@ node scripts/initializeDB.js
 
 **What it does:**
 - Creates all database indexes for optimal performance
-- Creates default admin user (if not exists)
-  - Email: `chinmoy6667@gmail.com`
-  - Password: `Admin@123456` (change immediately!)
+- Creates default admin user (if not exists), using `ADMIN_EMAIL` and `ADMIN_PASSWORD` from `.env`
+  - If `ADMIN_PASSWORD` is not set, admin user creation is skipped
 
 ---
 
@@ -88,8 +89,8 @@ The email service uses Gmail SMTP for sending emails.
 **Current Setup:**
 - SMTP Host: `smtp.gmail.com`
 - SMTP Port: `587`
-- User: `chinmoy7776@gmail.com`
-- Password: App-specific password (stored in .env)
+- User: configured via `SMTP_MAIL` in `.env`
+- Password: App-specific password, configured via `SMTP_PASSWORD` in `.env`
 
 ### Emails Sent By System
 
@@ -116,7 +117,7 @@ The email service uses Gmail SMTP for sending emails.
 
 6. **Password Reset**
    - Sent on forgot password request
-   - Contains reset link (expires in 1 hour)
+   - Contains 6-digit OTP (expires in 10 minutes)
 
 ### Testing Email
 
@@ -144,9 +145,9 @@ await emailService.sendOrderConfirmationEmail(
 Cloudinary is used for storing product images and user uploads.
 
 **Current Setup:**
-- Cloud Name: `dc4e7ctxc`
-- API Key: Available in `.env`
-- API Secret: Available in `.env`
+- Cloud Name: configured via `CLOUDINARY_CLOUD_NAME` in `.env`
+- API Key: configured via `CLOUDINARY_API_KEY` in `.env`
+- API Secret: configured via `CLOUDINARY_API_SECRET` in `.env`
 
 ### Supported Uploads
 
@@ -195,7 +196,7 @@ Check that `.env` file has:
 - ✅ SMTP_MAIL & SMTP_PASSWORD
 - ✅ CLOUDINARY_* keys
 - ✅ JWT_SECRET & JWT_EXPIRE
-- ✅ ADMIN_EMAIL
+- ✅ ADMIN_EMAIL & ADMIN_PASSWORD
 
 ### Step 3: Initialize Database (One-time)
 
@@ -220,8 +221,7 @@ Expected output:
 
 👤 Setting up admin user...
   ✓ Admin user created: chinmoy6667@gmail.com
-  ⚠️  Default password: Admin@123456
-  ⚠️  Please change this password immediately in production!
+  ⚠️  Password set from ADMIN_PASSWORD env var. Change it after first login.
 
 ✅ Database initialization complete
 ```
@@ -320,12 +320,13 @@ For production:
 
 ### Default Admin Account
 
-After running `scripts/initializeDB.js`:
+After running `scripts/initializeDB.js`, an admin user is created using the
+`ADMIN_EMAIL` and `ADMIN_PASSWORD` values from `.env`. If `ADMIN_PASSWORD` is
+not set, no admin account is created.
 
-**Email**: `chinmoy6667@gmail.com`
-**Password**: `Admin@123456`
-
-⚠️ **IMPORTANT**: Change this password immediately after first login!
+⚠️ **IMPORTANT**: Never commit real admin credentials to `.env.example` or this
+guide. Change the password after first login and keep `.env` out of version
+control.
 
 ---
 
@@ -357,9 +358,9 @@ After running `scripts/initializeDB.js`:
 | Email (Gmail) | ✅ Active | `SMTP_MAIL`, `SMTP_PASSWORD` |
 | Cloudinary | ✅ Active | `CLOUDINARY_*` |
 | JWT | ✅ Active | `JWT_SECRET`, `JWT_EXPIRE` |
-| Admin Email | ✅ Set | `ADMIN_EMAIL=chinmoy6667@gmail.com` |
+| Admin | ✅ Set | `ADMIN_EMAIL`, `ADMIN_PASSWORD` |
 
 ---
 
-**Last Updated**: 2026-07-17
+**Last Updated**: 2026-07-21
 **Status**: ✅ Ready for Development

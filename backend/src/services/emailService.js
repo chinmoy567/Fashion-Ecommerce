@@ -208,6 +208,31 @@ const sendDeliveryNotificationEmail = async (email, order, customer) => {
   return getTransporter().sendMail(mailOptions)
 }
 
+// Send a 6-digit OTP the user submits to reset their password
+const sendPasswordResetOTPEmail = async (email, otp, name) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
+    to: email,
+    subject: 'Your Password Reset Code - FashionHub',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Password Reset Request</h2>
+        <p>Hi ${name},</p>
+        <p>We received a request to reset your password. Use the code below to continue:</p>
+        <div style="background: #f0f0f0; padding: 20px; text-align: center; margin: 20px 0; border-radius: 5px;">
+          <h1 style="letter-spacing: 5px; margin: 0; color: #333;">${otp}</h1>
+        </div>
+        <p>This code will expire in 10 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">© 2026 FashionHub. All rights reserved.</p>
+      </div>
+    `,
+  }
+
+  return getTransporter().sendMail(mailOptions)
+}
+
 const sendPasswordResetEmail = async (email, resetLink, name) => {
   const mailOptions = {
     from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
@@ -258,5 +283,6 @@ export default {
   sendShippingNotificationEmail,
   sendDeliveryNotificationEmail,
   sendPasswordResetEmail,
+  sendPasswordResetOTPEmail,
   sendMarketingEmail,
 }

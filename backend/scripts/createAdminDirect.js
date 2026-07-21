@@ -23,8 +23,13 @@ async function createAdmin() {
     });
     console.log('✅ Connected!\n');
 
-    const adminEmail = 'chinmoy6667@gmail.com';
-    const adminPassword = 'Admin@123456';
+    const adminEmail = process.env.ADMIN_EMAIL || 'chinmoy6667@gmail.com';
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      console.error('❌ ADMIN_PASSWORD not set in .env');
+      process.exit(1);
+    }
 
     // Check if exists
     let admin = await AdminUser.findOne({ email: adminEmail });

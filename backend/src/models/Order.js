@@ -40,7 +40,6 @@ const orderSchema = new mongoose.Schema(
     },
     parcelId: { type: String },
     courier: { type: String },
-    shippingMethod: { type: mongoose.Schema.Types.ObjectId, ref: 'ShippingMethod' },
     paymentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
     couponCode: { type: String },
     notes: { type: String },

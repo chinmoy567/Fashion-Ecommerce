@@ -140,6 +140,114 @@ describe('POST /api/auth/login', () => {
   });
 });
 
+describe('POST /api/auth/forgot-password', () => {
+  let sendResetSpy;
+
+  beforeEach(() => {
+    sendResetSpy = jest.spyOn(emailService, 'sendPasswordResetOTPEmail').mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    sendResetSpy.mockRestore();
+  });
+
+  it('issues a reset OTP for an existing customer', async () => {
+    await createCustomer({ email: 'forgot@test.com' });
+
+    const res = await request(app).post('/api/auth/forgot-password').send({ email: 'forgot@test.com' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+
+    const stored = await Customer.findOne({ email: 'forgot@test.com' });
+    expect(stored.otp).toBeTruthy();
+    expect(sendResetSpy).toHaveBeenCalledWith('forgot@test.com', stored.otp, stored.name);
+  });
+
+  it('returns success without sending an email for an unknown address', async () => {
+    const res = await request(app).post('/api/auth/forgot-password').send({ email: 'nobody@test.com' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(sendResetSpy).not.toHaveBeenCalled();
+  });
+
+  it('rejects a missing email', async () => {
+    const res = await request(app).post('/api/auth/forgot-password').send({});
+    expect(res.status).toBe(400);
+  });
+});
+
+describe('POST /api/auth/reset-password', () => {
+  it('resets the password with a valid OTP', async () => {
+    const { customer } = await createCustomer({ email: 'resetme@test.com' });
+    customer.otp = '123456';
+    customer.otpExpiry = new Date(Date.now() + 10 * 60000);
+    await customer.save();
+
+    const res = await request(app).post('/api/auth/reset-password').send({
+      email: 'resetme@test.com',
+      otp: '123456',
+      newPassword: 'NewPassword123!',
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+
+    const login = await request(app).post('/api/auth/login').send({
+      email: 'resetme@test.com',
+      password: 'NewPassword123!',
+    });
+    expect(login.status).toBe(200);
+    expect(login.body.data.token).toBeTruthy();
+  });
+
+  it('rejects an incorrect OTP', async () => {
+    const { customer } = await createCustomer({ email: 'resetbad@test.com' });
+    customer.otp = '123456';
+    customer.otpExpiry = new Date(Date.now() + 10 * 60000);
+    await customer.save();
+
+    const res = await request(app).post('/api/auth/reset-password').send({
+      email: 'resetbad@test.com',
+      otp: '000000',
+      newPassword: 'NewPassword123!',
+    });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects an expired OTP', async () => {
+    const { customer } = await createCustomer({ email: 'resetexpired@test.com' });
+    customer.otp = '123456';
+    customer.otpExpiry = new Date(Date.now() - 1000);
+    await customer.save();
+
+    const res = await request(app).post('/api/auth/reset-password').send({
+      email: 'resetexpired@test.com',
+      otp: '123456',
+      newPassword: 'NewPassword123!',
+    });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects a password shorter than 6 characters', async () => {
+    const { customer } = await createCustomer({ email: 'resetshort@test.com' });
+    customer.otp = '123456';
+    customer.otpExpiry = new Date(Date.now() + 10 * 60000);
+    await customer.save();
+
+    const res = await request(app).post('/api/auth/reset-password').send({
+      email: 'resetshort@test.com',
+      otp: '123456',
+      newPassword: '123',
+    });
+
+    expect(res.status).toBe(400);
+  });
+});
+
 describe('POST /api/auth/staff-login', () => {
   it('logs in an active admin user', async () => {
     await createAdmin({ email: 'staff@test.com', role: 'manager' });

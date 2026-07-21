@@ -11,7 +11,6 @@ export default function Checkout() {
   const [formData, setFormData] = useState({
     shippingAddress: { line1: '', city: '', upazila: '', division: '', postalCode: '' },
     billingAddress: { line1: '', city: '', upazila: '', division: '', postalCode: '' },
-    shippingMethodId: 'standard',
   })
   const [loading, setLoading] = useState(false)
   const [appliedCoupon, setAppliedCoupon] = useState(null)
@@ -43,7 +42,7 @@ export default function Checkout() {
     setLoading(true)
     try {
       const response = await createOrder(formData)
-      navigate(`/orders/${response.data.data._id}/payment`)
+      navigate(`/orders/${response.data.data._id}/confirmation`)
     } catch (error) {
       console.error('Error creating order:', error)
     } finally {
@@ -130,7 +129,7 @@ export default function Checkout() {
               disabled={loading}
               className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 disabled:bg-gray-400"
             >
-              {loading ? 'Processing...' : 'Continue to Payment'}
+              {loading ? 'Processing...' : 'Place Order (Cash on Delivery)'}
             </button>
           </form>
         </div>

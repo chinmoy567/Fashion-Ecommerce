@@ -135,6 +135,13 @@ const createAdminUser = async () => {
     console.log('\n👤 Setting up admin user...');
 
     const adminEmail = process.env.ADMIN_EMAIL || 'chinmoy6667@gmail.com';
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      console.warn('  ⚠️  ADMIN_PASSWORD not set in .env - skipping admin user creation');
+      return;
+    }
+
     const existingAdmin = await AdminUser.findOne({ email: adminEmail });
 
     if (existingAdmin) {
@@ -146,15 +153,14 @@ const createAdminUser = async () => {
       fullName: 'System Administrator',
       email: adminEmail,
       phone: '+8801700000000',
-      password: 'Admin@123456', // Default password - should be changed
+      password: adminPassword,
       role: 'super_admin',
       isActive: true,
     });
 
     await adminUser.save();
     console.log(`  ✓ Admin user created: ${adminEmail}`);
-    console.log('  ⚠️  Default password: Admin@123456');
-    console.log('  ⚠️  Please change this password immediately in production!\n');
+    console.log('  ⚠️  Password set from ADMIN_PASSWORD env var. Change it after first login.\n');
   } catch (error) {
     if (error.code === 11000) {
       console.log(`  ✓ Admin user already exists`);

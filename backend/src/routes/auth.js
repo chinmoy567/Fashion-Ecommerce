@@ -120,6 +120,59 @@ router.post('/login', async (req, res) => {
   });
 });
 
+// POST /auth/forgot-password - Request a password reset OTP
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email is required' });
+  }
+
+  const customer = await Customer.findOne({ email });
+
+  // Always return success to avoid revealing whether an email is registered
+  if (customer) {
+    const otp = generateOTP();
+    customer.otp = otp;
+    customer.otpExpiry = new Date(Date.now() + OTP_VALIDITY * 60000);
+    await customer.save();
+
+    emailService.sendPasswordResetOTPEmail(email, otp, customer.name).catch((error) => {
+      console.error(`Failed to send password reset email to ${email}:`, error.message);
+    });
+  }
+
+  res.json({
+    success: true,
+    message: 'If an account exists for this email, a reset code has been sent.',
+  });
+});
+
+// POST /auth/reset-password - Reset password using OTP
+router.post('/reset-password', async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Email, OTP, and new password are required' });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+  }
+
+  const customer = await Customer.findOne({ email });
+  if (!customer || !customer.otp || customer.otp !== otp || new Date() > customer.otpExpiry) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired reset code' });
+  }
+
+  customer.password = newPassword;
+  customer.otp = null;
+  customer.otpExpiry = null;
+  await customer.save();
+
+  res.json({ success: true, message: 'Password reset successfully. Please log in.' });
+});
+
 // POST /auth/refresh - Refresh JWT token
 router.post('/refresh', verifyToken, async (req, res) => {
   const token = generateToken(req.user.userId, req.user.role);

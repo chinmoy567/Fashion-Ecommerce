@@ -21,7 +21,7 @@ const sendOrderEmail = (sendFn, customer, ...args) => {
 
 // POST /orders - Create order from cart
 router.post('/', verifyToken, verifyCustomer, async (req, res) => {
-  const { shippingAddress, billingAddress, shippingMethodId } = req.body;
+  const { shippingAddress, billingAddress } = req.body;
 
   const cart = await Cart.findOne({ customerId: req.user.userId }).populate('items.productId');
   if (!cart || cart.items.length === 0) {
@@ -55,7 +55,6 @@ router.post('/', verifyToken, verifyCustomer, async (req, res) => {
     items: cart.items,
     shippingAddress,
     billingAddress,
-    shippingMethod: shippingMethodId,
     subtotal,
     shippingCharge,
     total,

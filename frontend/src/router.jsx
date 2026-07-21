@@ -8,6 +8,8 @@ import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 
@@ -15,6 +17,7 @@ import BlogPost from './pages/BlogPost'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import MyOrders from './pages/MyOrders'
+import OrderConfirmation from './pages/OrderConfirmation'
 import OrderTracking from './pages/OrderTracking'
 import Profile from './pages/Profile'
 import Wishlist from './pages/Wishlist'
@@ -44,10 +47,13 @@ const router = createBrowserRouter([
       { path: 'blog/:slug', element: <BlogPost /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
+      { path: 'forgot-password', element: <ForgotPassword /> },
+      { path: 'reset-password', element: <ResetPassword /> },
       { path: 'staff-login', element: <StaffLogin /> },
       { path: 'cart', element: <Cart /> },
       { path: 'checkout', element: <Checkout /> },
       { path: 'my-orders', element: <MyOrders /> },
+      { path: 'orders/:id/confirmation', element: <OrderConfirmation /> },
       { path: 'orders/:id/tracking', element: <OrderTracking /> },
       { path: 'profile', element: <Profile /> },
       { path: 'wishlist', element: <Wishlist /> },
