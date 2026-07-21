@@ -143,7 +143,7 @@ router.put('/:id/payment/confirm', verifyToken, verifyAdmin, async (req, res) =>
 // GET /orders - Get customer's orders
 router.get('/', verifyToken, verifyCustomer, async (req, res) => {
   const orders = await Order.find({ customerId: req.user.userId })
-    .populate('items.productId shippingMethod paymentId')
+    .populate('items.productId paymentId')
     .sort({ createdAt: -1 });
 
   res.json({ success: true, message: 'Orders retrieved', data: orders });
