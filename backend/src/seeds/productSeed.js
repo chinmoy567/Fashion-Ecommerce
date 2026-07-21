@@ -7,21 +7,53 @@ import { connectDB } from '../config/database.js';
 
 dotenv.config();
 
-// Category structure
+// Category structure (3 levels: parent -> subcategory -> leaf category used by products)
 const CATEGORIES = {
   'mens-clothing': {
     name: "Men's Clothing",
     subcategories: {
-      'mens-upper': { name: "Men's Upper Wear" },
-      'mens-lower': { name: "Men's Lower Wear" }
+      'mens-upper': {
+        name: "Men's Upper Wear",
+        leaves: {
+          'mens-shirt': { name: "Men's Shirts" },
+          'mens-tshirt': { name: "Men's T-Shirts" },
+          'mens-jacket': { name: "Men's Jackets" }
+        }
+      },
+      'mens-lower': {
+        name: "Men's Lower Wear",
+        leaves: {
+          'mens-pants': { name: 'Pants' },
+          'mens-jeans': { name: 'Jeans' }
+        }
+      }
     }
   },
   'womens-clothing': {
     name: "Women's Clothing",
     subcategories: {
-      'womens-upper': { name: "Women's Upper Wear" },
-      'womens-lower': { name: "Women's Lower Wear" },
-      'womens-fullbody': { name: "Women's Full Body" }
+      'womens-upper': {
+        name: "Women's Upper Wear",
+        leaves: {
+          'womens-blouse': { name: "Women's Blouses" },
+          'womens-tshirt': { name: "Women's T-Shirts" },
+          'womens-jacket': { name: "Women's Jackets" }
+        }
+      },
+      'womens-lower': {
+        name: "Women's Lower Wear",
+        leaves: {
+          'womens-jeans': { name: "Women's Jeans" },
+          'womens-skirt': { name: "Women's Skirts" }
+        }
+      },
+      'womens-fullbody': {
+        name: "Women's Full Body",
+        leaves: {
+          'womens-dress': { name: 'Dresses' },
+          'womens-saree': { name: 'Sarees' }
+        }
+      }
     }
   },
   'kids-clothing': {
@@ -412,6 +444,20 @@ const seedDatabase = async () => {
         });
         categoryMap[subKey] = subCategory._id;
         console.log(`    ✓ ${subData.name}`);
+
+        // Create leaf categories (the level products actually reference)
+        if (subData.leaves) {
+          for (const [leafKey, leafData] of Object.entries(subData.leaves)) {
+            const leafCategory = await Category.create({
+              name: leafData.name,
+              description: `${leafData.name} collection`,
+              parentId: subCategory._id,
+              slug: leafKey
+            });
+            categoryMap[leafKey] = leafCategory._id;
+            console.log(`      ✓ ${leafData.name}`);
+          }
+        }
       }
     }
 
