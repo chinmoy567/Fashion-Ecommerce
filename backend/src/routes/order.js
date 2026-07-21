@@ -3,10 +3,20 @@ import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import Payment from '../models/Payment.js';
 import Product from '../models/Product.js';
+import Customer from '../models/Customer.js';
 import { verifyToken, verifyCustomer, verifyAdmin } from '../middlewares/auth.js';
 import { generateOrderNumber } from '../utils/orderNumber.js';
+import emailService from '../services/emailService.js';
 
 const router = express.Router();
+
+// Send an order-lifecycle email without letting delivery failures break the request
+const sendOrderEmail = (sendFn, customer, ...args) => {
+  if (!customer?.email || customer.preferences?.notifications === false) return;
+  sendFn(customer.email, ...args).catch((error) => {
+    console.error(`Failed to send order email to ${customer.email}:`, error.message);
+  });
+};
 
 // POST /orders - Create order from cart
 router.post('/', verifyToken, verifyCustomer, async (req, res) => {
@@ -45,6 +55,9 @@ router.post('/', verifyToken, verifyCustomer, async (req, res) => {
   cart.items = [];
   await cart.save();
 
+  const customer = await Customer.findById(req.user.userId);
+  sendOrderEmail(emailService.sendOrderConfirmationEmail, customer, order, customer);
+
   res.status(201).json({ success: true, message: 'Order created', data: order });
 });
 
@@ -80,6 +93,32 @@ router.post('/:id/payment', verifyToken, verifyCustomer, async (req, res) => {
   res.json({ success: true, message: 'Payment submitted', data: { orderId: order._id, paymentStatus: 'pending' } });
 });
 
+// PUT /orders/:id/payment/confirm - Verify payment and confirm order (admin only)
+router.put('/:id/payment/confirm', verifyToken, verifyAdmin, async (req, res) => {
+  const order = await Order.findById(req.params.id).populate('paymentId');
+  if (!order) {
+    return res.status(404).json({ success: false, message: 'Order not found' });
+  }
+  if (!order.paymentId) {
+    return res.status(400).json({ success: false, message: 'No payment proof submitted for this order' });
+  }
+
+  const payment = await Payment.findByIdAndUpdate(
+    order.paymentId._id,
+    { status: 'verified', verifiedAt: new Date(), verifiedBy: req.user.userId },
+    { new: true }
+  );
+
+  order.status = 'confirmed';
+  order.paymentId = payment;
+  await order.save();
+
+  const customer = await Customer.findById(order.customerId);
+  sendOrderEmail(emailService.sendPaymentReceivedEmail, customer, order, customer);
+
+  res.json({ success: true, message: 'Payment confirmed', data: { order, payment } });
+});
+
 // GET /orders - Get customer's orders
 router.get('/', verifyToken, verifyCustomer, async (req, res) => {
   const orders = await Order.find({ customerId: req.user.userId })
@@ -112,6 +151,13 @@ router.put('/:id/status', verifyToken, verifyAdmin, async (req, res) => {
 
   if (!order) {
     return res.status(404).json({ success: false, message: 'Order not found' });
+  }
+
+  const customer = await Customer.findById(order.customerId);
+  if (status === 'shipped') {
+    sendOrderEmail(emailService.sendShippingNotificationEmail, customer, order, customer);
+  } else if (status === 'delivered') {
+    sendOrderEmail(emailService.sendDeliveryNotificationEmail, customer, order, customer);
   }
 
   res.json({ success: true, message: 'Order updated', data: order });

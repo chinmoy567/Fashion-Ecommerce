@@ -1,16 +1,18 @@
 import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-})
+// Created lazily so SMTP_MAIL/SMTP_PASSWORD are read after dotenv has loaded
+const getTransporter = () =>
+  nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_MAIL,
+      pass: process.env.SMTP_PASSWORD,
+    },
+  })
 
 const sendOTPEmail = async (email, otp, name) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: 'Your OTP for FashionHub Registration',
     html: `
@@ -29,7 +31,7 @@ const sendOTPEmail = async (email, otp, name) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendOrderConfirmationEmail = async (email, order, customer) => {
@@ -47,7 +49,7 @@ const sendOrderConfirmationEmail = async (email, order, customer) => {
     .join('')
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: `Order Confirmation - #${order._id}`,
     html: `
@@ -80,7 +82,7 @@ const sendOrderConfirmationEmail = async (email, order, customer) => {
         <div style="margin-top: 20px; text-align: right;">
           <p><strong>Subtotal:</strong> ৳${order.subtotal?.toFixed(2) || 0}</p>
           ${order.discount ? `<p><strong style="color: green;">Discount:</strong> -৳${order.discount.toFixed(2)}</p>` : ''}
-          <p><strong>Shipping:</strong> ৳${order.shipping?.toFixed(2) || 0}</p>
+          <p><strong>Shipping:</strong> ৳${order.shippingCharge?.toFixed(2) || 0}</p>
           <h3 style="border-top: 2px solid #ddd; padding-top: 10px;">Total: ৳${order.total?.toFixed(2) || 0}</h3>
         </div>
 
@@ -102,12 +104,12 @@ const sendOrderConfirmationEmail = async (email, order, customer) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendPaymentReceivedEmail = async (email, order, customer) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: `Payment Received - Order #${order._id}`,
     html: `
@@ -135,12 +137,12 @@ const sendPaymentReceivedEmail = async (email, order, customer) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendShippingNotificationEmail = async (email, order, customer) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: `Your Order is on its Way - Order #${order._id}`,
     html: `
@@ -150,7 +152,7 @@ const sendShippingNotificationEmail = async (email, order, customer) => {
         <p>Great news! Your order has been dispatched and is on its way to you.</p>
 
         <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-          <p style="margin: 0;"><strong>Tracking Number:</strong> ${order.trackingNumber || 'N/A'}</p>
+          <p style="margin: 0;"><strong>Tracking Number:</strong> ${order.parcelId || 'N/A'}</p>
           <p style="margin: 10px 0 0 0;"><strong>Carrier:</strong> Standard Shipping</p>
           <p style="margin: 10px 0 0 0;"><strong>Estimated Delivery:</strong> 3-5 business days</p>
         </div>
@@ -170,12 +172,12 @@ const sendShippingNotificationEmail = async (email, order, customer) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendDeliveryNotificationEmail = async (email, order, customer) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: `Delivery Confirmed - Order #${order._id}`,
     html: `
@@ -203,12 +205,12 @@ const sendDeliveryNotificationEmail = async (email, order, customer) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendPasswordResetEmail = async (email, resetLink, name) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     to: email,
     subject: 'Password Reset Request - FashionHub',
     html: `
@@ -231,7 +233,7 @@ const sendPasswordResetEmail = async (email, resetLink, name) => {
     `,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 const sendMarketingEmail = async (emails, subject, htmlContent) => {
@@ -240,13 +242,13 @@ const sendMarketingEmail = async (emails, subject, htmlContent) => {
   }
 
   const mailOptions = {
-    from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+    from: process.env.EMAIL_FROM || process.env.SMTP_MAIL,
     bcc: emails.join(','),
     subject,
     html: htmlContent,
   }
 
-  return transporter.sendMail(mailOptions)
+  return getTransporter().sendMail(mailOptions)
 }
 
 export default {
