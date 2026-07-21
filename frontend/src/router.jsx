@@ -8,6 +8,8 @@ import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
 
 // Customer Pages
 import Cart from './pages/Cart'
@@ -28,6 +30,7 @@ import AdminCustomers from './pages/admin/Customers'
 import AdminReviews from './pages/admin/Reviews'
 import AdminCoupons from './pages/admin/Coupons'
 import AdminInventory from './pages/admin/Inventory'
+import AdminBlog from './pages/admin/Blog'
 
 const router = createBrowserRouter([
   {
@@ -37,6 +40,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'shop', element: <Shop /> },
       { path: 'products/:id', element: <ProductDetail /> },
+      { path: 'blog', element: <Blog /> },
+      { path: 'blog/:slug', element: <BlogPost /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'staff-login', element: <StaffLogin /> },
@@ -62,6 +67,7 @@ const router = createBrowserRouter([
       { path: 'reviews', element: <AdminReviews /> },
       { path: 'coupons', element: <AdminCoupons /> },
       { path: 'inventory', element: <AdminInventory /> },
+      { path: 'blog', element: <AdminBlog /> },
     ],
   },
 ])

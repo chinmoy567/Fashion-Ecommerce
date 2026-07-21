@@ -84,12 +84,20 @@ export default function AdminLayout() {
           </Link>
 
           {user?.role === 'super_admin' && (
-            <Link
-              to="/admin/coupons"
-              className="block px-4 py-2 rounded hover:bg-gray-700 transition"
-            >
-              🎟️ Coupons
-            </Link>
+            <>
+              <Link
+                to="/admin/coupons"
+                className="block px-4 py-2 rounded hover:bg-gray-700 transition"
+              >
+                🎟️ Coupons
+              </Link>
+              <Link
+                to="/admin/blog"
+                className="block px-4 py-2 rounded hover:bg-gray-700 transition"
+              >
+                📝 Blog
+              </Link>
+            </>
           )}
         </nav>
 

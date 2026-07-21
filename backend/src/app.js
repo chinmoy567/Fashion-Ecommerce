@@ -18,6 +18,7 @@ import couponRoutes from './routes/coupon.js';
 import inventoryRoutes from './routes/inventory.js';
 import notificationRoutes from './routes/notification.js';
 import analyticsRoutes from './routes/analytics.js';
+import blogRoutes from './routes/blog.js';
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/blog', blogRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

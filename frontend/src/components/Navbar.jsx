@@ -26,6 +26,9 @@ export default function Navbar() {
             <Link to="/shop" className="hover:text-gray-300">
               Shop
             </Link>
+            <Link to="/blog" className="hover:text-gray-300">
+              Blog
+            </Link>
             <Link to="/wishlist" className="hover:text-gray-300">
               Wishlist
             </Link>
