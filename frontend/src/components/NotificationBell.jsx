@@ -7,7 +7,7 @@ import { Bell } from 'lucide-react'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function NotificationBell() {
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const [unreadCount, setUnreadCount] = useState(0)
   const [showDropdown, setShowDropdown] = useState(false)
   const [notifications, setNotifications] = useState([])
@@ -24,7 +24,7 @@ export default function NotificationBell() {
   const fetchUnreadCount = async () => {
     try {
       const response = await axios.get(`${API_BASE}/notifications/count`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('customer_token')}` },
       })
       setUnreadCount(response.data.data.unreadCount)
     } catch (error) {
@@ -38,7 +38,7 @@ export default function NotificationBell() {
       try {
         setLoading(true)
         const response = await axios.get(`${API_BASE}/notifications?limit=5`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem('customer_token')}` },
         })
         setNotifications(response.data.data.items)
       } catch (error) {
@@ -57,7 +57,7 @@ export default function NotificationBell() {
         `${API_BASE}/notifications/${notificationId}/read`,
         {},
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem('customer_token')}` },
         }
       )
       fetchUnreadCount()

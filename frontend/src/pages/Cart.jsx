@@ -12,7 +12,7 @@ export default function Cart() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { items, total } = useSelector(state => state.cart)
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
 
   useEffect(() => {
     if (isAuthenticated) {

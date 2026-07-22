@@ -19,7 +19,7 @@ const STATUS_STYLES = {
 export default function MyOrders() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const { orders } = useSelector(state => state.orders)
   const revealRef = useScrollReveal()
 

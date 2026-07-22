@@ -18,7 +18,7 @@ export default function AdminCustomers() {
     try {
       setLoading(true)
       const response = await axios.get(`${API_BASE}/admin/customers`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       setCustomers(response.data.data || [])
     } catch (error) {

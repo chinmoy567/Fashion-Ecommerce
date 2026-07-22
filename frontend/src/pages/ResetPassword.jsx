@@ -5,6 +5,7 @@ import { resetPassword } from '../api/auth'
 import AuthCard from '../components/AuthCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 
 export default function ResetPassword() {
@@ -82,8 +83,7 @@ export default function ResetPassword() {
 
           <div>
             <Label className="mb-2">New Password</Label>
-            <Input
-              type="password"
+            <PasswordInput
               required
               minLength={6}
               value={formData.newPassword}
@@ -93,8 +93,7 @@ export default function ResetPassword() {
 
           <div>
             <Label className="mb-2">Confirm New Password</Label>
-            <Input
-              type="password"
+            <PasswordInput
               required
               minLength={6}
               value={formData.confirmPassword}

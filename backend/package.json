@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/freePort.js",
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "setup": "node scripts/initializeDB.js",

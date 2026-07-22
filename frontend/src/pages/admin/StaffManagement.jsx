@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Eye, EyeOff } from 'lucide-react'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function StaffManagement() {
   const navigate = useNavigate()
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.adminAuth)
   const [staff, setStaff] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({ fullName: '', email: '', password: '', role: 'manager' })
   const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     // Only a super admin may access staff management
@@ -24,7 +26,7 @@ export default function StaffManagement() {
   }, [user])
 
   const authHeaders = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
   })
 
   const fetchStaff = async () => {
@@ -106,14 +108,25 @@ export default function StaffManagement() {
 
           <div>
             <label className="block text-sm font-semibold mb-1">Password</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full border px-3 py-2 rounded"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                minLength={6}
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full border px-3 py-2 pr-10 rounded"
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
           </div>
 
           <div>

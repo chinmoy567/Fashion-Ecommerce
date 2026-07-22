@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { loginStaff } from '../api/auth'
-import { setUser, setToken } from '../store/slices/authSlice'
+import { setUser, setToken } from '../store/slices/adminAuthSlice'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 
 export default function StaffLogin() {
@@ -23,7 +24,7 @@ export default function StaffLogin() {
       const response = await loginStaff(formData)
       const { token, adminUser } = response.data.data
       // Save token to localStorage first (before any dispatch or navigation)
-      localStorage.setItem('token', token)
+      localStorage.setItem('admin_token', token)
       // Update Redux state (setUser persists the user to localStorage too)
       dispatch(setToken(token))
       dispatch(setUser(adminUser))
@@ -69,8 +70,7 @@ export default function StaffLogin() {
 
           <div>
             <Label className="mb-2">Password</Label>
-            <Input
-              type="password"
+            <PasswordInput
               required
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}

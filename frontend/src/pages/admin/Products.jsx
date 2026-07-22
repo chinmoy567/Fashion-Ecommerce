@@ -28,7 +28,7 @@ const EMPTY_FORM = {
 }
 
 export default function AdminProducts() {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.adminAuth)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(false)

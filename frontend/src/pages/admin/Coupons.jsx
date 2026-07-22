@@ -5,7 +5,7 @@ import axios from 'axios'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function Coupons() {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.adminAuth)
   const [coupons, setCoupons] = useState([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -33,7 +33,7 @@ export default function Coupons() {
     try {
       setLoading(true)
       const response = await axios.get(`${API_BASE}/coupons?page=${page}&limit=10`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       setCoupons(response.data.data.items || [])
       setTotalPages(response.data.data.pagination?.pages || 1)
@@ -48,7 +48,7 @@ export default function Coupons() {
     e.preventDefault()
     try {
       await axios.post(`${API_BASE}/coupons`, formData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       alert('Coupon created successfully')
       setFormData({
@@ -71,7 +71,7 @@ export default function Coupons() {
     if (!confirm('Are you sure?')) return
     try {
       await axios.delete(`${API_BASE}/coupons/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       fetchCoupons()
     } catch (error) {

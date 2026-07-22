@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../store/slices/authSlice'
+import { logout } from '../store/slices/adminAuthSlice'
 
 export default function AdminLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isAuthenticated, user } = useSelector(state => state.auth)
+  const { isAuthenticated, user } = useSelector(state => state.adminAuth)
   const isStaff = isAuthenticated && (user?.role === 'manager' || user?.role === 'super_admin')
 
   // Redirect if not admin/manager (navigation must happen in an effect, not during render)

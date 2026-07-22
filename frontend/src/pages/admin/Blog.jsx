@@ -15,7 +15,7 @@ const emptyForm = {
 }
 
 export default function Blog() {
-  const { user } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.adminAuth)
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -24,7 +24,7 @@ export default function Blog() {
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState(emptyForm)
 
-  const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+  const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } }
   const isAuthorized = user?.role === 'super_admin'
 
   useEffect(() => {

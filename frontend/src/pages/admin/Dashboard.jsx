@@ -12,7 +12,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
-  const { user, isAuthenticated } = useSelector(state => state.auth)
+  const { user, isAuthenticated } = useSelector(state => state.adminAuth)
   const [loading, setLoading] = useState(true)
   const [metrics, setMetrics] = useState(null)
   const [statusBreakdown, setStatusBreakdown] = useState([])
@@ -28,7 +28,7 @@ export default function AdminDashboard() {
   const fetchDashboard = async () => {
     try {
       setLoading(true)
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('admin_token')
       const [dashboardRes, statusRes] = await Promise.all([
         axios.get(`${API_BASE}/analytics/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },

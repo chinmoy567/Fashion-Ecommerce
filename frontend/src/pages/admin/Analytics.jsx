@@ -31,7 +31,7 @@ const downloadCsv = (filename, sections) => {
 }
 
 export default function Analytics() {
-  const { user } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.adminAuth)
   const [loading, setLoading] = useState(false)
   const [metrics, setMetrics] = useState(null)
   const [dailyTrend, setDailyTrend] = useState([])
@@ -47,7 +47,7 @@ export default function Analytics() {
   const [rangeMetrics, setRangeMetrics] = useState(null)
   const [rangeError, setRangeError] = useState('')
 
-  const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+  const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } }
   const isAuthorized = user?.role === 'manager' || user?.role === 'super_admin'
 
   useEffect(() => {

@@ -3,10 +3,11 @@ import { useDispatch } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { registerCustomer, verifyEmail } from '../api/auth'
-import { setUser, setToken } from '../store/slices/authSlice'
+import { setUser, setToken } from '../store/slices/customerAuthSlice'
 import AuthCard from '../components/AuthCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Label } from '@/components/ui/label'
 
 export default function Register() {
@@ -116,8 +117,7 @@ export default function Register() {
 
         <div>
           <Label className="mb-2">Password</Label>
-          <Input
-            type="password"
+          <PasswordInput
             required
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}

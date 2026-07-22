@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { isAuthenticated, user } = useSelector(state => state.auth)
+  const { isAuthenticated, user } = useSelector(state => state.customerAuth)
   const [formData, setFormData] = useState({ name: '', phone: '', email: '' })
 
   useEffect(() => {

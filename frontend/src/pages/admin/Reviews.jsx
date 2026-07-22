@@ -5,7 +5,7 @@ import axios from 'axios'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function Reviews() {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.adminAuth)
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -24,7 +24,7 @@ export default function Reviews() {
     try {
       setLoading(true)
       const response = await axios.get(`${API_BASE}/reviews?page=${page}&limit=10`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       setReviews(response.data.data.items || [])
       setTotalPages(response.data.data.pagination?.pages || 1)

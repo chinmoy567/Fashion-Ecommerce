@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// Rehydrate the persisted user on load; corrupt/missing data just falls back to null
+// Rehydrate the persisted admin/staff user on load; corrupt/missing data just falls back to null
 const getStoredUser = () => {
   try {
-    return JSON.parse(localStorage.getItem('user')) || null
+    return JSON.parse(localStorage.getItem('admin_user')) || null
   } catch {
     return null
   }
@@ -11,31 +11,31 @@ const getStoredUser = () => {
 
 const initialState = {
   user: getStoredUser(),
-  token: localStorage.getItem('token'),
-  isAuthenticated: !!localStorage.getItem('token'),
+  token: localStorage.getItem('admin_token'),
+  isAuthenticated: !!localStorage.getItem('admin_token'),
   loading: false,
   error: null,
 }
 
-const authSlice = createSlice({
-  name: 'auth',
+const adminAuthSlice = createSlice({
+  name: 'adminAuth',
   initialState,
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload
       state.isAuthenticated = true
-      localStorage.setItem('user', JSON.stringify(action.payload))
+      localStorage.setItem('admin_user', JSON.stringify(action.payload))
     },
     setToken: (state, action) => {
       state.token = action.payload
-      localStorage.setItem('token', action.payload)
+      localStorage.setItem('admin_token', action.payload)
     },
     logout: (state) => {
       state.user = null
       state.token = null
       state.isAuthenticated = false
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      localStorage.removeItem('admin_token')
+      localStorage.removeItem('admin_user')
     },
     setLoading: (state, action) => {
       state.loading = action.payload
@@ -46,5 +46,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setUser, setToken, logout, setLoading, setError } = authSlice.actions
-export default authSlice.reducer
+export const { setUser, setToken, logout, setLoading, setError } = adminAuthSlice.actions
+export default adminAuthSlice.reducer

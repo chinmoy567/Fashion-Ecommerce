@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, ShoppingBag, Heart } from 'lucide-react'
-import { logout } from '../store/slices/authSlice'
+import { Menu, ShoppingBag, Heart, ShieldCheck } from 'lucide-react'
+import { logout } from '../store/slices/customerAuthSlice'
 import NotificationBell from './NotificationBell'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -35,9 +35,14 @@ function NavLink({ to, children, onClick }) {
 export default function Navbar() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const { items } = useSelector(state => state.cart)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  // Staff/admin session is separate from the customer session; show a shortcut when logged in as staff
+  const { isAuthenticated: isStaffAuthenticated, user: staffUser } = useSelector(state => state.adminAuth)
+  const isStaff = isStaffAuthenticated && (staffUser?.role === 'manager' || staffUser?.role === 'super_admin')
+  const adminHomeLink = staffUser?.role === 'super_admin' ? '/admin/dashboard' : '/admin/manager-dashboard'
 
   const handleLogout = () => {
     dispatch(logout())
@@ -79,6 +84,16 @@ export default function Navbar() {
             </Link>
 
             <NotificationBell />
+
+            {isStaff && (
+              <Link
+                to={adminHomeLink}
+                className="flex items-center gap-1.5 rounded-full border border-gold/40 px-3 py-1.5 text-sm text-gold hover:bg-gold/10 transition-colors"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Admin Panel
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
@@ -127,6 +142,16 @@ export default function Navbar() {
               <NavLink key={link.to} to={link.to} onClick={() => setMobileOpen(false)}>{link.label}</NavLink>
             ))}
             <NavLink to="/wishlist" onClick={() => setMobileOpen(false)}>Wishlist</NavLink>
+            {isStaff && (
+              <Link
+                to={adminHomeLink}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-1.5 text-sm text-gold"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Admin Panel
+              </Link>
+            )}
             {isAuthenticated ? (
               <>
                 <NavLink to="/my-orders" onClick={() => setMobileOpen(false)}>Orders</NavLink>

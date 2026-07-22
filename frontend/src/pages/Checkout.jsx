@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 export default function Checkout() {
   const navigate = useNavigate()
   const { items, total } = useSelector(state => state.cart)
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const [formData, setFormData] = useState({
     shippingAddress: { line1: '', city: '', upazila: '', division: '', postalCode: '' },
     billingAddress: { line1: '', city: '', upazila: '', division: '', postalCode: '' },

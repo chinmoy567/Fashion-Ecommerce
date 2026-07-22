@@ -1,12 +1,15 @@
 import dotenv from 'dotenv';
 import dns from 'dns';
-import app from './app.js';
-import { connectDB } from './config/database.js';
-import { validateEmailConfig, testEmailConnection } from './config/email.js';
-import { validateCloudinaryConfig, testCloudinaryConnection } from './config/cloudinary.js';
-import { validateEnv } from './config/validateEnv.js';
 
 dotenv.config();
+
+// Modules below read process.env at import time (e.g. app.js's cors() origin),
+// so they must be loaded dynamically after dotenv.config() has run.
+const { default: app } = await import('./app.js');
+const { connectDB } = await import('./config/database.js');
+const { validateEmailConfig, testEmailConnection } = await import('./config/email.js');
+const { validateCloudinaryConfig, testCloudinaryConnection } = await import('./config/cloudinary.js');
+const { validateEnv } = await import('./config/validateEnv.js');
 
 validateEnv();
 

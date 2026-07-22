@@ -12,7 +12,7 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function ReviewSection() {
   const { id } = useParams()
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const [reviews, setReviews] = useState([])
   const [averageRating, setAverageRating] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -54,7 +54,7 @@ export default function ReviewSection() {
           comment: formData.comment,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem('customer_token')}` },
         }
       )
       toast.success('Review submitted! It will be visible after approval.')

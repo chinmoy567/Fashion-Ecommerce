@@ -17,7 +17,7 @@ export default function ProductDetail() {
   const { id } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isAuthenticated } = useSelector(state => state.auth)
+  const { isAuthenticated } = useSelector(state => state.customerAuth)
   const { selectedProduct } = useSelector(state => state.products)
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)

@@ -5,7 +5,7 @@ import axios from 'axios'
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
 
 export default function Inventory() {
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.adminAuth)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [summary, setSummary] = useState(null)
@@ -44,7 +44,7 @@ export default function Inventory() {
       if (categoryId) params.set('categoryId', categoryId)
 
       const response = await axios.get(`${API_BASE}/inventory?${params}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       setProducts(response.data.data.items || [])
       setTotalPages(response.data.data.pagination?.pages || 1)
@@ -67,7 +67,7 @@ export default function Inventory() {
   const fetchSummary = async () => {
     try {
       const response = await axios.get(`${API_BASE}/inventory/summary`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
       })
       setSummary(response.data.data)
     } catch (error) {
@@ -88,7 +88,7 @@ export default function Inventory() {
           reason: adjustmentData.reason,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
         }
       )
       alert('Stock adjusted successfully')

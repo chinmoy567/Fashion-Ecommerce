@@ -28,7 +28,7 @@ export default function AdminOrders() {
   }, [page, statusFilter])
 
   const authHeaders = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` },
   })
 
   const fetchOrders = async () => {
