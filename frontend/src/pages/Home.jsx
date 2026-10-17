@@ -71,7 +71,8 @@ export default function Home() {
         {/* Base video — looping ambient glow, falls back to the static photo poster when it can't play */}
         <video
           ref={heroVideoRef}
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: '78% top' }}
           src={heroVideo}
           poster={heroImage}
           autoPlay
