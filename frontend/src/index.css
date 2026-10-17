@@ -93,4 +93,11 @@
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--accent) / 0.5);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-cloud-drift,
+    .animate-water-shimmer {
+      animation: none;
+    }
+  }
 }

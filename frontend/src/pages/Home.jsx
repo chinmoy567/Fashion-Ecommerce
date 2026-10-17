@@ -9,6 +9,8 @@ import { gsap } from '@/lib/gsap'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 import { Button } from '@/components/ui/button'
 import ProductCard from '@/components/ProductCard'
+import heroImage from '@/assets/images/hero-storm-coast.png'
+import heroVideo from '@/assets/videos/hero-orb-glow.mp4'
 
 const categories = [
   { name: 'Men', slug: 'mens-clothing' },
@@ -21,6 +23,7 @@ export default function Home() {
   const dispatch = useDispatch()
   const { products } = useSelector(state => state.products)
   const heroRef = useRef(null)
+  const heroVideoRef = useRef(null)
   const categoryReveal = useScrollReveal()
   const productReveal = useScrollReveal()
 
@@ -47,6 +50,7 @@ export default function Home() {
 
       if (reduced) {
         gsap.set(targets, { opacity: 1, y: 0 })
+        heroVideoRef.current?.pause()
         return
       }
 
@@ -63,13 +67,28 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div ref={heroRef} className="relative overflow-hidden bg-gold-glow bg-gradient-to-b from-secondary/40 to-background py-32 sm:py-44">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+      <div ref={heroRef} className="relative overflow-hidden py-32 sm:py-44">
+        {/* Base video — looping ambient glow, falls back to the static photo poster when it can't play */}
+        <video
+          ref={heroVideoRef}
+          className="absolute inset-0 h-full w-full object-cover object-top"
+          src={heroVideo}
+          poster={heroImage}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        />
+        {/* Darkening overlay for text contrast */}
+        <div className="absolute inset-0 bg-black/50" />
+
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
           <p data-hero className="text-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-6">New Season Arrivals</p>
-          <h1 data-hero className="font-display text-6xl sm:text-8xl font-extrabold uppercase tracking-[0.02em] mb-8 text-balance">
+          <h1 data-hero className="font-display text-6xl sm:text-8xl font-extrabold uppercase tracking-[0.02em] mb-8 text-balance text-white">
             Welcome to DeerFit
           </h1>
-          <p data-hero className="text-base sm:text-lg tracking-wide text-muted-foreground mb-12 text-balance">
+          <p data-hero className="text-base sm:text-lg tracking-wide text-white/80 mb-12 text-balance">
             Discover the latest trends in Bangladesh clothing
           </p>
           <div data-hero>
