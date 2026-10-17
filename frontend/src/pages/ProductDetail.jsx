@@ -9,6 +9,7 @@ import { addToCart } from '../api/cart'
 import { setSelectedProduct } from '../store/slices/productSlice'
 import { addItem } from '../store/slices/cartSlice'
 import ReviewSection from '../components/ReviewSection'
+import TestimonialsMarquee from '../components/TestimonialsMarquee'
 import RelatedProducts from '../components/RelatedProducts'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -88,12 +89,12 @@ export default function ProductDetail() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <button
         onClick={() => window.history.back()}
-        className="mb-8 text-gold hover:text-gold-light font-medium flex items-center gap-1.5 transition-colors"
+        className="mb-8 text-sm tracking-[0.15em] uppercase text-gold hover:text-gold-light font-medium flex items-center gap-1.5 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Back to Shop
       </button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -101,7 +102,7 @@ export default function ProductDetail() {
           transition={{ duration: 0.5 }}
           className="sticky top-24 h-fit"
         >
-          <div className="bg-secondary rounded-xl overflow-hidden ring-1 ring-white/10 flex items-center justify-center aspect-square">
+          <div className="bg-secondary ring-1 ring-white/10 flex items-center justify-center aspect-[3/4]">
             {selectedProduct.image ? (
               <img
                 src={selectedProduct.image}
@@ -123,18 +124,18 @@ export default function ProductDetail() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <h1 className="font-display text-4xl font-bold mb-2">{selectedProduct.name}</h1>
-          <p className="text-lg text-muted-foreground mb-4">{selectedProduct.brand || 'DeerFit'}</p>
+          <p className="text-xs tracking-[0.25em] uppercase text-gold mb-3">{selectedProduct.brand || 'DeerFit'}</p>
+          <h1 className="font-display text-4xl sm:text-5xl font-bold uppercase tracking-wide mb-6 text-balance">{selectedProduct.name}</h1>
 
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
-            <span className="text-3xl font-semibold text-gold">৳{selectedProduct.price}</span>
+            <span className="text-2xl font-semibold text-gold">৳{selectedProduct.price}</span>
             {selectedProduct.discountPrice && (
               <span className="text-muted-foreground line-through">৳{selectedProduct.discountPrice}</span>
             )}
             {availableStock > 0 ? (
-              <span className="text-success font-medium text-sm">In Stock</span>
+              <span className="text-success font-medium text-xs tracking-[0.1em] uppercase">In Stock</span>
             ) : (
-              <span className="text-destructive font-medium text-sm">Out of Stock</span>
+              <span className="text-destructive font-medium text-xs tracking-[0.1em] uppercase">Out of Stock</span>
             )}
           </div>
 
@@ -143,8 +144,8 @@ export default function ProductDetail() {
           {/* Variant Picker (size/color with per-variant stock) */}
           {selectedProduct.trackVariantStock && variants.length > 0 && (
             <div className="mb-8 pb-8 border-b border-white/10">
-              <label className="block text-sm font-medium mb-3">Select Size / Color</label>
-              <div className="flex gap-2 flex-wrap">
+              <label className="block text-xs tracking-[0.15em] uppercase font-medium mb-3">Select Size / Color</label>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {variants.map(v => (
                   <motion.button
                     key={v._id}
@@ -152,7 +153,7 @@ export default function ProductDetail() {
                     whileTap={{ scale: 0.95 }}
                     disabled={v.stock === 0}
                     onClick={() => setSelectedVariantId(v._id)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                    className={`h-11 px-2 text-sm font-medium border transition-colors ${
                       selectedVariantId === v._id
                         ? 'bg-gold text-black border-gold'
                         : 'bg-secondary text-secondary-foreground border-white/10 hover:border-gold/50'
@@ -167,13 +168,13 @@ export default function ProductDetail() {
 
           {/* Colors & Sizes (informational, for products without variant tracking) */}
           {!selectedProduct.trackVariantStock && (
-            <div className="mb-8 pb-8 border-b border-white/10 space-y-4">
+            <div className="mb-8 pb-8 border-b border-white/10 space-y-5">
               {selectedProduct.colors && selectedProduct.colors.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">Available Colors</label>
+                  <label className="block text-xs tracking-[0.15em] uppercase font-medium mb-3">Available Colors</label>
                   <div className="flex gap-2 flex-wrap">
                     {selectedProduct.colors.map(color => (
-                      <span key={color} className="px-3 py-1 bg-secondary rounded-full text-sm capitalize">
+                      <span key={color} className="px-3 py-1 border border-white/10 text-sm capitalize">
                         {color}
                       </span>
                     ))}
@@ -182,10 +183,10 @@ export default function ProductDetail() {
               )}
               {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium mb-2">Available Sizes</label>
-                  <div className="flex gap-2 flex-wrap">
+                  <label className="block text-xs tracking-[0.15em] uppercase font-medium mb-3">Available Sizes</label>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     {selectedProduct.sizes.map(size => (
-                      <span key={size} className="px-3 py-1 bg-secondary rounded-full text-sm uppercase font-medium">
+                      <span key={size} className="h-11 flex items-center justify-center border border-white/10 text-sm uppercase font-medium">
                         {size}
                       </span>
                     ))}
@@ -195,13 +196,12 @@ export default function ProductDetail() {
             </div>
           )}
 
-          <div className="mb-8 pb-8 border-b border-white/10">
-            <label className="block text-sm font-medium mb-3">Quantity</label>
-            <div className="flex gap-4">
-              <div className="flex items-center border border-white/10 rounded-lg overflow-hidden">
+          <div className="mb-8">
+            <div className="flex gap-3">
+              <div className="flex items-center border border-white/10">
                 <button
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="h-11 w-11 flex items-center justify-center hover:bg-white/5 transition-colors"
+                  className="h-12 w-11 flex items-center justify-center hover:bg-white/5 transition-colors"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
@@ -211,11 +211,11 @@ export default function ProductDetail() {
                   max={availableStock}
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-14 h-11 text-center bg-transparent focus:outline-none"
+                  className="w-14 h-12 text-center bg-transparent focus:outline-none"
                 />
                 <button
                   onClick={() => setQuantity(q => Math.min(availableStock || q + 1, q + 1))}
-                  className="h-11 w-11 flex items-center justify-center hover:bg-white/5 transition-colors"
+                  className="h-12 w-11 flex items-center justify-center hover:bg-white/5 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -223,14 +223,14 @@ export default function ProductDetail() {
               <Button
                 onClick={handleAddToCart}
                 disabled={availableStock === 0 || (selectedProduct.trackVariantStock && !selectedVariantId)}
-                className="flex-1 h-11 bg-gold text-black hover:bg-gold-light disabled:opacity-40"
+                className="flex-1 h-12 rounded-none bg-gold text-black hover:bg-gold-light disabled:opacity-40 text-sm tracking-[0.2em] uppercase"
               >
                 Add to Cart
               </Button>
             </div>
           </div>
 
-          <div className="bg-secondary/50 p-5 rounded-xl space-y-2 text-sm">
+          <div className="border border-white/10 p-5 space-y-2 text-sm">
             <p><span className="text-muted-foreground">Available Stock:</span> <span className="text-success font-medium">{availableStock}</span></p>
             <p><span className="text-muted-foreground">SKU:</span> {selectedProduct.sku}</p>
             <p><span className="text-muted-foreground">Material:</span> {selectedProduct.material || 'N/A'}</p>
@@ -239,6 +239,7 @@ export default function ProductDetail() {
         </motion.div>
       </div>
 
+      <TestimonialsMarquee />
       <ReviewSection />
       <RelatedProducts />
     </div>

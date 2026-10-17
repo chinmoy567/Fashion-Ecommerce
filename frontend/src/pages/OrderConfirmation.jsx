@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle2, Phone } from 'lucide-react'
 import { getOrderById } from '../api/order'
 import { Button } from '@/components/ui/button'
+import ConfettiBackground from '@/components/ui/confetti-background'
 
 // Shown after a Cash on Delivery order is placed; no online payment gateway is involved
 export default function OrderConfirmation() {
@@ -11,6 +12,13 @@ export default function OrderConfirmation() {
   const navigate = useNavigate()
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showConfetti, setShowConfetti] = useState(true)
+
+  // Celebration runs briefly, not for as long as the user stays on the page
+  useEffect(() => {
+    const timer = setTimeout(() => setShowConfetti(false), 5000)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     fetchOrder()
@@ -32,11 +40,12 @@ export default function OrderConfirmation() {
   if (!order) return <div className="text-center py-24 text-muted-foreground">Order not found</div>
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
+    <div className="max-w-2xl mx-auto px-4 py-16 relative">
+      {showConfetti && <ConfettiBackground />}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card ring-1 ring-white/10 p-8 rounded-2xl text-center"
+        className="relative z-10 bg-card ring-1 ring-white/10 p-8 rounded-2xl text-center"
       >
         <motion.div
           initial={{ scale: 0 }}

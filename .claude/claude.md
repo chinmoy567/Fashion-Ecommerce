@@ -36,7 +36,7 @@ For every feature, follow this workflow in order:
    - Define request/response schemas, validation, authentication, and error handling.
 
 5. Frontend
-- Read and follow the Premium Frontend guidelines from `.claude/skills/premium-frontend/`.
+- Use the `ui-ux-pro-max` skill suite (design, ui-styling, design-system, banner-design, brand) as the frontend design authority for this project.
 - Design the UI and user flow.
 - Implement reusable, accessible, responsive, and production-quality components.
 - Follow the project's design system, component architecture, and state management patterns.

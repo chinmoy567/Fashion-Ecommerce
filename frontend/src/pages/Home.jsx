@@ -63,19 +63,19 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div ref={heroRef} className="relative overflow-hidden bg-gold-glow bg-gradient-to-b from-secondary/40 to-background py-28 sm:py-36">
+      <div ref={heroRef} className="relative overflow-hidden bg-gold-glow bg-gradient-to-b from-secondary/40 to-background py-32 sm:py-44">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p data-hero className="text-gold text-sm tracking-[0.3em] uppercase mb-4">New Season Arrivals</p>
-          <h1 data-hero className="font-display text-5xl sm:text-7xl font-bold mb-6 text-balance">
+          <p data-hero className="text-gold text-xs sm:text-sm tracking-[0.4em] uppercase mb-6">New Season Arrivals</p>
+          <h1 data-hero className="font-display text-6xl sm:text-8xl font-extrabold uppercase tracking-[0.02em] mb-8 text-balance">
             Welcome to DeerFit
           </h1>
-          <p data-hero className="text-lg text-muted-foreground mb-10 text-balance">
+          <p data-hero className="text-base sm:text-lg tracking-wide text-muted-foreground mb-12 text-balance">
             Discover the latest trends in Bangladesh clothing
           </p>
           <div data-hero>
             <Button
               size="lg"
-              className="bg-gold text-black hover:bg-gold-light h-12 px-8 text-base"
+              className="bg-gold text-black hover:bg-gold-light h-12 px-10 text-sm tracking-[0.2em] uppercase"
               render={<Link to="/shop" />} nativeButton={false}
             >
               Shop Now <ArrowRight className="h-4 w-4" />
@@ -85,16 +85,16 @@ export default function Home() {
       </div>
 
       {/* Categories */}
-      <div ref={categoryReveal} className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <h2 data-reveal className="font-display text-3xl font-bold mb-10">Shop by Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+      <div ref={categoryReveal} className="max-w-7xl mx-auto px-4 sm:px-6 py-24 sm:py-32">
+        <h2 data-reveal className="font-display text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.02em] mb-16">Shop by Category</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
           {categories.map(cat => (
-            <motion.div key={cat.slug} data-reveal whileHover={{ y: -4 }}>
+            <motion.div key={cat.slug} data-reveal whileHover={{ y: -4 }} className="bg-background">
               <Link
                 to={`/shop?category=${cat.slug}`}
-                className="block bg-card ring-1 ring-white/10 hover:ring-gold/40 p-6 rounded-xl text-center transition-colors"
+                className="group flex h-full flex-col items-center justify-center gap-2 p-10 text-center transition-colors hover:bg-card"
               >
-                <h3 className="font-display font-semibold text-lg">{cat.name}</h3>
+                <h3 className="font-display font-semibold text-xl uppercase tracking-[0.1em] group-hover:text-gold transition-colors">{cat.name}</h3>
               </Link>
             </motion.div>
           ))}
@@ -102,9 +102,12 @@ export default function Home() {
       </div>
 
       {/* Featured Products */}
-      <div ref={productReveal} className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <h2 data-reveal className="font-display text-3xl font-bold mb-10">Featured Products</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div ref={productReveal} className="max-w-7xl mx-auto px-4 sm:px-6 py-24 sm:py-32">
+        <div data-reveal className="flex items-baseline justify-between gap-4 mb-16 border-b border-border pb-6">
+          <h2 className="font-display text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.02em]">Featured Products</h2>
+          <span className="text-gold text-sm tracking-[0.2em] uppercase shrink-0">({products.length})</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {products.map(product => (
             <ProductCard key={product._id} product={{ ...product, images: product.image ? [product.image] : [] }} />
           ))}

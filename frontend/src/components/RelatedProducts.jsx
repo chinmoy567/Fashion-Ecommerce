@@ -28,8 +28,8 @@ export default function RelatedProducts() {
   if (loading || products.length === 0) return null
 
   return (
-    <div ref={revealRef} className="mt-16 border-t border-white/10 pt-10">
-      <h2 data-reveal className="font-display text-2xl font-bold mb-6">You May Also Like</h2>
+    <div ref={revealRef} className="mt-16 border-t border-white/10 pt-16">
+      <h2 data-reveal className="font-display text-3xl sm:text-4xl font-bold uppercase tracking-[0.02em] text-center mb-10">You May Also Like</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {products.map((product) => (
           <Link
@@ -38,7 +38,10 @@ export default function RelatedProducts() {
             to={`/products/${product._id}`}
             className="group block"
           >
-            <div className="bg-secondary rounded-xl overflow-hidden ring-1 ring-white/10 group-hover:ring-gold/40 aspect-square flex items-center justify-center mb-2 transition-colors">
+            <div className="relative bg-secondary ring-1 ring-white/10 group-hover:ring-gold/40 aspect-[3/4] flex items-center justify-center mb-3 transition-colors">
+              <span className="absolute left-0 top-0 bg-gold/90 text-black text-[10px] font-medium tracking-[0.15em] uppercase px-2 py-1">
+                New
+              </span>
               {product.image ? (
                 <img
                   src={product.image}

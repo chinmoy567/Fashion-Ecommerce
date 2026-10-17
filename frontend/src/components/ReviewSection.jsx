@@ -84,20 +84,20 @@ export default function ReviewSection() {
   return (
     <div className="mt-16 border-t border-white/10 pt-10">
       <div className="mb-8">
-        <h2 className="font-display text-2xl font-bold mb-4">Customer Reviews</h2>
+        <h2 className="font-display text-3xl font-extrabold uppercase tracking-[0.02em] mb-6">Customer Reviews</h2>
 
-        <div className="mb-6 p-5 bg-secondary/50 rounded-xl">
+        <div className="mb-6 pb-6 border-b border-white/10">
           <div className="flex items-center gap-4">
             <span className="text-4xl font-display font-bold">{averageRating}</span>
             <div>
               {renderStars(Math.round(averageRating))}
-              <p className="text-sm text-muted-foreground mt-1">Based on {reviews.length} reviews</p>
+              <p className="text-sm text-muted-foreground mt-1 tracking-wide uppercase">Based on {reviews.length} reviews</p>
             </div>
           </div>
         </div>
 
         {isAuthenticated && !showReviewForm && (
-          <Button onClick={() => setShowReviewForm(true)} className="mb-6 bg-gold text-black hover:bg-gold-light">
+          <Button onClick={() => setShowReviewForm(true)} className="mb-6 rounded-none bg-gold text-black hover:bg-gold-light text-sm tracking-[0.15em] uppercase">
             Write a Review
           </Button>
         )}
@@ -109,14 +109,14 @@ export default function ReviewSection() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               onSubmit={handleSubmitReview}
-              className="mb-6 p-5 bg-secondary/50 rounded-xl overflow-hidden"
+              className="mb-6 p-5 border border-white/10 overflow-hidden"
             >
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Rating</label>
+                <label className="block text-xs tracking-[0.15em] uppercase font-medium mb-2">Rating</label>
                 <select
                   value={formData.rating}
                   onChange={(e) => setFormData({ ...formData, rating: parseInt(e.target.value) })}
-                  className="w-full bg-secondary border border-white/10 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold/50"
+                  className="w-full bg-secondary border border-white/10 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gold/50"
                 >
                   <option value={5}>5 Stars - Excellent</option>
                   <option value={4}>4 Stars - Good</option>
@@ -127,7 +127,7 @@ export default function ReviewSection() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Comment (optional)</label>
+                <label className="block text-xs tracking-[0.15em] uppercase font-medium mb-2">Comment (optional)</label>
                 <Textarea
                   value={formData.comment}
                   onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
@@ -139,10 +139,10 @@ export default function ReviewSection() {
               </div>
 
               <div className="flex gap-2">
-                <Button type="submit" disabled={submitting} className="bg-gold text-black hover:bg-gold-light">
+                <Button type="submit" disabled={submitting} className="rounded-none bg-gold text-black hover:bg-gold-light text-sm tracking-[0.15em] uppercase">
                   {submitting ? 'Submitting...' : 'Submit Review'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setShowReviewForm(false)}>
+                <Button type="button" variant="outline" className="rounded-none" onClick={() => setShowReviewForm(false)}>
                   Cancel
                 </Button>
               </div>
@@ -151,20 +151,18 @@ export default function ReviewSection() {
         </AnimatePresence>
       </div>
 
-      <div className="space-y-4">
+      <div className="divide-y divide-white/10 border-t border-white/10">
         {reviews.length > 0 ? (
           reviews.map((review) => (
-            <div key={review._id} className="p-4 border border-white/10 rounded-xl">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <p className="font-medium">{review.customerId?.name || 'Anonymous'}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(review.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
+            <div key={review._id} className="py-6">
+              <div className="flex justify-between items-start mb-3">
                 {renderStars(review.rating)}
+                <p className="text-xs text-muted-foreground tracking-wide">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </p>
               </div>
-              {review.comment && <p className="text-muted-foreground">{review.comment}</p>}
+              <p className="font-medium text-sm tracking-[0.1em] uppercase mb-2">{review.customerId?.name || 'Anonymous'}</p>
+              {review.comment && <p className="text-muted-foreground leading-relaxed">{review.comment}</p>}
             </div>
           ))
         ) : (
